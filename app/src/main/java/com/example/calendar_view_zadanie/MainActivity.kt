@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
         var policzview = findViewById<TextView>(R.id.textView3)
 
         kalendarz.minDate = System.currentTimeMillis()
-        kalendarz.maxDate = System.currentTimeMillis(720)
+        kalendarz.maxDate = System.currentTimeMillis() + (kalendarz.maxDate - System.currentTimeMillis())
 
         var data_odjazdu = mutableListOf<Int>(0,0,0)
         var data_powrotu= mutableListOf<Int>(0,0,0)
