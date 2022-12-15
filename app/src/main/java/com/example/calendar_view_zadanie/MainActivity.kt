@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.ZoneId
 import java.util.Date
+import kotlin.math.absoluteValue
 
 class MainActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -50,14 +51,17 @@ class MainActivity : AppCompatActivity() {
             data_powrotu[1] = data[1]
             data_powrotu[2] = data[2]
             powrotview.text = "Data powrotu:  "+data[0].toString()+"-"+data[1].toString()+"-"+data[2].toString();
-        }
-        policz.setOnClickListener {Int
 
-            var temp1 = (data_powrotu[0]*360) + (data_powrotu[1]*30) + data_powrotu[2]
-            var temp2 = (data_odjazdu[0]*360) + (data_odjazdu[1]*30) + data_odjazdu[2]
-            var temp = temp1.toChar() - temp2.toChar()
-            policzview.text = "Ilosc dni: "+temp.toString()
+            // Jeśli obie daty nie są puste program wyświetli czas podróży w dniach
+            if (data_odjazdu[0] != 0 && data_powrotu[0] != 0)
+                if(data_odjazdu[2] > data_powrotu[2]  && data_odjazdu[1] == data_powrotu[1])
+                    policzview.text = "Nie możesz wyjechać później niż wrócisz!"
+                else
+                    nazwa(data_odjazdu, data_powrotu, policzview)
         }
+
+
+
 
 
     }
@@ -71,3 +75,9 @@ fun MilliToDate(milli : Long) : List<Int>
     val ans = formattedDate.split("/").map { it.toInt() }
     return ans;
 }
+
+fun nazwa(data_powrotu : MutableList<Int>, data_odjazdu : MutableList<Int>, policzview : TextView)
+{   var temp1 = (data_powrotu[0]*360) + (data_powrotu[1]*30) + data_powrotu[2]
+    var temp2 = (data_odjazdu[0]*360) + (data_odjazdu[1]*30) + data_odjazdu[2]
+    var temp = temp1.toChar() - temp2.toChar()
+    policzview.text = "Ilosc dni: " +temp.absoluteValue.toString()}
