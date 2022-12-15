@@ -1,14 +1,20 @@
 package com.example.calendar_view_zadanie
 
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
+import androidx.annotation.RequiresApi
 import android.os.Bundle
 import android.widget.Button
 import android.widget.CalendarView
 import android.widget.TextView
 import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.ZoneId
 import java.util.Date
 
 class MainActivity : AppCompatActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -21,11 +27,11 @@ class MainActivity : AppCompatActivity() {
         var policzview = findViewById<TextView>(R.id.textView3)
 
         kalendarz.minDate = System.currentTimeMillis()
-        kalendarz.maxDate = System.currentTimeMillis() + (kalendarz.maxDate - System.currentTimeMillis())
+        kalendarz.maxDate = LocalDate.now().plusYears(2).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
 
         var data_odjazdu = mutableListOf<Int>(0,0,0)
         var data_powrotu= mutableListOf<Int>(0,0,0)
-        var data = arrayListOf<Int>(0,0,0)
+        var data = arrayListOf<Int>(MilliToDate(kalendarz.date)[0],MilliToDate(kalendarz.date)[1],MilliToDate(kalendarz.date)[2])
         kalendarz.setOnDateChangeListener() { CalendarView , i, i2, i3 ->
             data[0] = i
             data[1] = i2+1
@@ -46,6 +52,7 @@ class MainActivity : AppCompatActivity() {
             powrotview.text = "Data powrotu:  "+data[0].toString()+"-"+data[1].toString()+"-"+data[2].toString();
         }
         policz.setOnClickListener {Int
+
             var temp1 = (data_powrotu[0]*360) + (data_powrotu[1]*30) + data_powrotu[2]
             var temp2 = (data_odjazdu[0]*360) + (data_odjazdu[1]*30) + data_odjazdu[2]
             var temp = temp1.toChar() - temp2.toChar()
@@ -54,4 +61,13 @@ class MainActivity : AppCompatActivity() {
 
 
     }
+}
+
+fun MilliToDate(milli : Long) : List<Int>
+{
+    val date = Date(milli)
+    val formatter = SimpleDateFormat("yyyy/MM/dd")
+    val formattedDate = formatter.format(date)
+    val ans = formattedDate.split("/").map { it.toInt() }
+    return ans;
 }
